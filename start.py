@@ -3,6 +3,10 @@
 import os
 import re
 
+# For debug only
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+
 print("Started\n")
 
 class SymbolFlags:
@@ -50,11 +54,12 @@ class HexStr:
 class Symbol:
     rex = re.compile(r"^([0-9A-Fa-f]+)[ \t](.......)[ \t]+([^ \t]+)[ \t]+([^ \t]*)[ \t]+([^ \t]*)$")
     sectionfilter = re.compile(r"^(\.?[^ \.]+)(\..+)?")
-    def __init__(self, line):
+    def __init__(self, line, loc):
         m = re.search(self.rex, line)
         if not m:
             raise ValueError("RE does not match")
 
+        self.loc = loc
         self.addr = HexStr(m.group(1))
         self.flagsstr = m.group(2)
         self.fullsection = m.group(3)
@@ -72,33 +77,51 @@ class Symbol:
             return self.fullsection
         return m.group(1)
 
-def read_dump(command):
+def read_dump(command, arr, loc):
     stream = os.popen(command)
     for line in stream:
         line = line.replace("\r", "").replace("\n", "")
         try:
-            ms = Symbol(line)
+            ms = Symbol(line, loc)
         except ValueError:
             continue
+        arr.append(ms)
 
-        if ms.flags.isFunction:
-            continue
-        if int(ms.segsize) == 0:
-            continue
+def GetObjectsInPath(path):
+    base = os.path.normpath(path)
+    results = [];
+    for dirpath, dirnames, filenames in os.walk(path):
+        for filename in [f for f in filenames]:
+            if not filename.endswith(".o"):
+                continue
+            fpath = dirpath + "/" + filename
+            rpath = os.path.relpath(fpath, base)
+            rloc = os.path.relpath(dirpath, base)
+            objname = re.sub(" ", "_", rpath)
+            objname = re.sub(r"^(\.\/)(.*)$", r"\2", objname)
+            objname = re.sub(r"\.[^\.]*$", "", objname)
+            objname = re.sub(r"/", "_", objname)
+            if not rloc.startswith('.'):
+                rloc = "./" + rloc
+            loc = {
+                'filename': filename,
+                'objname': objname,
+                'relpath': rpath,
+                'relloc': rloc,
+                'fullpath': fpath
+            }
+            results.append(loc)
+    pp.pprint(results)
+    return results
 
-        print("")
+def DumpFilefInLocations(locations):
+    arr = []
+    for loc in locations:
+        read_dump("objdump -t %s" % loc['fullpath'], arr, loc)
+    return arr
 
-        for tag in ms.__dict__.items():
-            print("%s\t- %s" %(tag[0], tag[1]))
-
-        #m = ms.m
-        #for i in range(0, len(m.groups())+1):
-        #    e = m.group(i)
-        #    print("m[%d] = %s" % (i, e))
-        #line = line.replace(" ", ".").replace("\t", ":")
-        print("< %s >" % line)
-
-read_dump("objdump -t socket.o")
-
-
-
+# read_dump("objdump -t socket.o")
+loc = GetObjectsInPath("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
+arr = DumpFilefInLocations(loc)
+for item in [i for i in arr if i.flags.isFunction]:
+    print(item.loc['objname'], item.symbol)
