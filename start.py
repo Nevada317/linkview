@@ -14,21 +14,19 @@ pp = pprint.PrettyPrinter(indent=4)
 def main():
     print("Started\n")
     # loc = GetObjectsInPath("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
-    st = SymbolTree()
+    st = SymbolTree("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
 
-    st.FillObjects("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
-
-    GlobalFunctions = [i for i in st.symbols if i.flags.isFunction and i.flags.isGlobal]
-    GlobalVars = [i for i in st.symbols if not i.flags.isFunction and i.flags.isGlobal]
-    Undefs = [i for i in st.symbols if i.flags.isUnd]
-
-    for i in GlobalFunctions:
-            print(i)
+    for path,obj in [(o['relloc'],o['objname']) for o in st.objects]:
+        print(path,obj)
 
 
-    for i in Undefs:
-        if i.symbol not in [f.symbol for f in GlobalFunctions]:
-            print(i)
+    # for i in st.globalFunctions:
+    #     print(i)
+    #
+    #
+    # for i in Undefs:
+    #     if i.symbol not in [f.symbol for f in GlobalFunctions]:
+    #         print(i)
 
 
 

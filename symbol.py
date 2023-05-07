@@ -7,25 +7,26 @@ class SymbolFlags:
             raise ValueError("Bad flags length")
 
         self.isGlobal = (self.str[0] in "gu!")
-        self.isGlobalUniq = (self.str[0] in "u")
+        self.isGlobalUniq = (self.str[0] == "u")
         self.isLocal = (self.str[0] in "l!")
 
-        self.isWeak = (self.str[1] in "w")
+        self.isWeak = (self.str[1] == "w")
 
-        self.isCtor = (self.str[2] in "C")
+        self.isCtor = (self.str[2] == "C")
 
-        self.isWarning = (self.str[3] in "W")
+        self.isWarning = (self.str[3] == "W")
 
-        self.isIndirect = (self.str[4] in "I")
-        self.isRelocator = (self.str[4] in "i")
+        self.isIndirect = (self.str[4] == "I")
+        self.isRelocator = (self.str[4] == "i")
 
-        self.isDebug = (self.str[5] in "d")
-        self.isDynamic = (self.str[5] in "D")
-        self.isStatic = (self.str[5] in " ")
+        self.isDebug = (self.str[5] == "d")
+        self.isDynamic = (self.str[5] == "D")
+        self.isStatic = (self.str[5] == " ")
 
-        self.isFunction = (self.str[6] in "F")
-        self.isFile = (self.str[6] in "f")
-        self.isObject = (self.str[6] in "O")
+        self.isFunction = (self.str[6] == "F")
+        self.isFile = (self.str[6] == "f")
+        self.isObject = (self.str[6] == "O")
+        self.isRegular = (self.str[6] == " ")
 
         self.isAbs = section == "*ABS*"
         self.isCom = section == "*COM*"
