@@ -4,7 +4,8 @@ class Dot:
 	def __init__(self):
 		self.indent_char = "\t"
 		self.subgraph_colors = ['red', 'green', 'blue', 'cyan']
-		self.node_args = "test=1"
+		self.node_args = ""
+		self.vertex_args = ""
 		self.digraph = False
 
 		self._string = ""
@@ -53,14 +54,8 @@ class Dot:
 
 # ###########################################
 
-	def AddNode(self, line):
-		self._AddLine(line + ";")
-
-	def AddVertex(self, nodeA, nodeB, args=""):
-		if self.digraph:
-			line = "%s -> %s" % (nodeA, nodeB)
-		else:
-			line = "%s -- %s" % (nodeA, nodeB)
+	def AddNode(self, node, args=""):
+		line = node
 		args_line = args
 		if args_line and self.node_args:
 			args_line += ", "
@@ -70,8 +65,25 @@ class Dot:
 			line += " [%s]" % args_line
 		self._AddLine(line + ";")
 
+	def AddVertex(self, nodeA, nodeB, args=""):
+		if self.digraph:
+			line = "%s -> %s" % (nodeA, nodeB)
+		else:
+			line = "%s -- %s" % (nodeA, nodeB)
+		args_line = args
+		if args_line and self.vertex_args:
+			args_line += ", "
+		if self.vertex_args:
+			args_line += self.vertex_args
+		if args_line:
+			line += " [%s]" % args_line
+		self._AddLine(line + ";")
+
 	def AddComment(self, line):
 		self._AddLine("// " + line)
+
+	def AddCustomLine(self, line):
+		self._AddLine(line)
 
 # ###########################################
 

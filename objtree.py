@@ -32,12 +32,10 @@ class ObjTree:
 				subdirs.append(dirpath)
 				self.subdirs[parent] = subdirs
 
-	def GetDotNotation(self):
-		self.dot_indent = 1
-		self.dot_indent_char = '\t'
-		self.dot_str = ""
+	def GetDotNotation(self, dot):
+		self.dot = dot
 		self.DotSubdir('.')
-		return self.dot_str
+		self.dot = 0
 
 	def DotSubdir(self, path):
 		print("Entering %s" % (path))
@@ -54,37 +52,23 @@ class ObjTree:
 			self.Dot_EndDir()
 
 	def Dot_AddDir(self, name):
+		if not self.dot:
+			return
 		dirname = name.replace("./", "").replace("/", "_")
-		ind = self.dot_indent_char * self.dot_indent
-		self.dot_str += "%ssubgraph cluster_%s {\n" % (
-			ind,
-			dirname
-			)
-		self.dot_indent += 1
-		ind = self.dot_indent_char * self.dot_indent
-		self.dot_str += "%s// Dir: %s\n" % (
-			ind,
-			name
-			)
-		pass
+		subdirname = name.split("/")[-1]
+		self.dot.SubgraphEnter("cluster_" + dirname)
+		self.dot.AddComment("Dir: %s" % name)
+		self.dot.AddCustomLine('label="%s"' % subdirname)
 
 	def Dot_EndDir(self):
-		self.dot_indent -= 1
-		ind = self.dot_indent_char * self.dot_indent
-		self.dot_str += "%s}\n" % (
-			ind
-			)
-		pass
-
+		if not self.dot:
+			return
+		self.dot.SubgraphExit()
 
 	def Dot_AddObject(self, obj):
-		ind = self.dot_indent_char * self.dot_indent
-		self.dot_str += "%s%s [label=\"%s\"];\n" % (
-			ind,
-			obj['fullobj'],
-			obj['objname']
-			)
-		pass
+		if not self.dot:
+			return
+		self.dot.AddNode(obj['fullobj'], 'label="%s"' % obj['objname'])
 
 
 
