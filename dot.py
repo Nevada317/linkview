@@ -16,7 +16,6 @@ class Dot:
 		self._subgraph_args = []
 		self._subgraph_color_index = 0
 		self._subgraph_depth = 0
-		pass
 
 	def _Sync(self):
 		if self._opened:
@@ -53,9 +52,11 @@ class Dot:
 		self._opened = False
 
 # ###########################################
+	def _NodeFormat(self,NodeName):
+		return "_" + NodeName.replace(" ", "_")
 
 	def AddNode(self, node, args=""):
-		line = node
+		line = self._NodeFormat(node)
 		args_line = args
 		if args_line and self.node_args:
 			args_line += ", "
@@ -67,9 +68,9 @@ class Dot:
 
 	def AddVertex(self, nodeA, nodeB, args=""):
 		if self.digraph:
-			line = "%s -> %s" % (nodeA, nodeB)
+			line = "%s -> %s" % (self._NodeFormat(nodeA), self._NodeFormat(nodeB))
 		else:
-			line = "%s -- %s" % (nodeA, nodeB)
+			line = "%s -- %s" % (self._NodeFormat(nodeA), self._NodeFormat(nodeB))
 		args_line = args
 		if args_line and self.vertex_args:
 			args_line += ", "
@@ -90,9 +91,9 @@ class Dot:
 	def GraphAddArg(self, line):
 		self._graph_args.append(line)
 
-	def GraphEnter(self, graph_type):
+	def GraphEnter(self):
 		self._subgraph_depth = 0
-		self._AddLine("%s {" % graph_type)
+		self._AddLine("%s {" % ("digraph" if self.digraph else "graph"))
 		for line in self._graph_args:
 			self._AddLine(line)
 
@@ -111,7 +112,7 @@ class Dot:
 		for line in self._subgraph_args:
 			self._AddLine(line)
 		if len(self.subgraph_colors):
-			self._AddLine("color=%s" % self.subgraph_colors[self._subgraph_color_index])
+			self._AddLine('color="%s"' % self.subgraph_colors[self._subgraph_color_index])
 			self._subgraph_color_index += 1
 			if self._subgraph_color_index >= len(self.subgraph_colors):
 				self._subgraph_color_index = 0

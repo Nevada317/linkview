@@ -53,7 +53,7 @@ class SymbolTree:
             self.symbols.append(ms)
 
     def FinalSplit(self):
-        self.globalVars = [s for s in self.symbols if (s.flags.isGlobal and s.flags.isRegular and not s.flags.isUnd)]
+        self.globalVars = [s for s in self.symbols if (s.flags.isGlobal and s.flags.isObject and not s.flags.isUnd)]
         self.globalFunctions = [s for s in self.symbols if (s.flags.isGlobal and s.flags.isFunction and not s.flags.isUnd)]
         self.allUndefs = [s for s in self.symbols if (s.flags.isUnd)]
         self.absolutes = [s for s in self.symbols if (s.flags.isAbs)]

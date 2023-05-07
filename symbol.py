@@ -73,3 +73,6 @@ class Symbol:
 
     def __str__(self):
         return "@%s \t%s \t%s \t%s \t@%s \ts%d\n%s" % (self.addr, self.section, self.flags, self.symbol, self.loc['objname'], self.segsize, self.line)
+
+    def __eq__(self, b):
+        return self.symbol == b
