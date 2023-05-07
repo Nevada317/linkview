@@ -1,6 +1,8 @@
 #!/bin/env python
 
 import re
+import os
+
 
 from symboltree import SymbolTree
 from objtree import ObjTree
@@ -17,7 +19,18 @@ def main():
     st = SymbolTree("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
 
     ot = ObjTree(st.objects)
-    s = ot.GetDotNotation()
+    s = "digraph {\n"
+    s += ot.GetDotNotation()
+    s += "}"
+    print(s)
+
+    f = open("test.dot", "w+")
+    f.write(s)
+    f.close()
+    stream = os.popen('bash -c "dot -Tpng test.dot > test.png"')
+
+
+
     # print(ot.dirs)
     # pp.pprint(ot.subdirs)
 
