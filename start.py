@@ -3,6 +3,7 @@
 import re
 
 from symboltree import SymbolTree
+from objtree import ObjTree
 
 # For debug only
 import pprint
@@ -13,11 +14,18 @@ pp = pprint.PrettyPrinter(indent=4)
 
 def main():
     print("Started\n")
-    # loc = GetObjectsInPath("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
     st = SymbolTree("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
 
-    for path,obj in [(o['relloc'],o['objname']) for o in st.objects]:
-        print(path,obj)
+    ot = ObjTree(st.objects)
+    s = ot.GetDotNotation()
+    # print(ot.dirs)
+    # pp.pprint(ot.subdirs)
+
+
+    dirs = []
+
+    # for path,obj in [(o['relloc'],o['objname']) for o in st.objects]:
+        # print(path,obj)
 
 
     # for i in st.globalFunctions:
