@@ -33,7 +33,7 @@ class ObjTree:
 				self.subdirs[parent] = subdirs
 
 	def GetDotNotation(self):
-		self.dot_indent = 0
+		self.dot_indent = 1
 		self.dot_indent_char = '\t'
 		self.dot_str = ""
 		self.DotSubdir('.')
