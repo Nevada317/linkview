@@ -108,8 +108,10 @@ f.write('Definition,Variable,Caller\n')
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
-pp.pprint(st.functionCalls)
-pp.pprint(st.crossVars)
+pp.pprint(st.functionDefinitions)
+# pp.pprint(st.functionCalls)
+# pp.pprint(st.variableDefinitions)
+# pp.pprint(st.variableCalls)
 
 
 
