@@ -12,20 +12,8 @@ if (len(sys.argv) != 2):
 	print("Bad usage. Usage:\n  %s <build_dir>" % sys.argv[0])
 indir = sys.argv[1]
 
-
-
-
-# For debug only
-import pprint
-pp = pprint.PrettyPrinter(indent=4)
-
-
-
-st = []
-
-# def main():
 print("Started\n")
-st = SymbolTree("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
+st = SymbolTree(indir)
 # st = SymbolTree("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140/pos")
 ot = ObjTree(st.objects)
 d = Dot()
@@ -79,7 +67,6 @@ f = open("vars.csv", "w+")
 f.write('Definition,Variable,Caller\n')
 
 for variable_def in st.globalVars:
-    pp.pprint(variable_def)
     var_name = variable_def.symbol
     fun_loc = variable_def.loc['fullobj']
     usages = [s.loc for s in st.allUndefs if s == var_name and s.loc['fullobj'] != fun_loc]
