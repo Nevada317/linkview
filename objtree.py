@@ -38,16 +38,13 @@ class ObjTree:
 		self.dot = 0
 
 	def DotSubdir(self, path):
-		print("Entering %s" % (path))
 		if path != '.':
 			self.Dot_AddDir(path)
 		for obj in [obj for obj in self.objects if obj['relloc'] == path]:
-			print("  Obj %s" % (obj['objname']))
 			self.Dot_AddObject(obj)
 		subdirs = self.subdirs.get(path, [])
 		for sd in subdirs:
 			self.DotSubdir(sd)
-		print("Ending %s" % (path))
 		if path != '.':
 			self.Dot_EndDir()
 

@@ -57,4 +57,41 @@ class SymbolTree:
         self.globalFunctions = [s for s in self.symbols if (s.flags.isGlobal and s.flags.isFunction and not s.flags.isUnd)]
         self.allUndefs = [s for s in self.symbols if (s.flags.isUnd)]
         self.absolutes = [s for s in self.symbols if (s.flags.isAbs)]
+        self.FillFunctionCalls()
+        self.FillVariables()
 
+
+    def FillFunctionCalls(self):
+        self.functionCalls = {}
+        for fun_def in self.globalFunctions:
+            fun_name = fun_def.symbol
+            usages = [s for s in self.allUndefs if s == fun_name]
+            if usages:
+                if not fun_name in self.functionCalls:
+                    self.functionCalls[fun_name] = []
+                for usageN in usages:
+                    self.functionCalls[fun_name].append(usageN)
+
+    def FillVariables(self):
+        self.crossVars = {}
+        for var_def in self.globalVars:
+            var_name = var_def.symbol
+            usages = [s for s in self.allUndefs if s == var_name]
+            if usages:
+                if not var_name in self.crossVars:
+                    self.crossVars[var_name] = []
+                for usageN in usages:
+                    self.crossVars[var_name].append(usageN)
+
+
+
+#################################### PRIVATES
+
+    def _AddIfMissing(self, dictX, arg, val):
+        if arg not in dictX:
+            dictX[arg] = val
+
+    def _AddVertex(self, filleddict, nodeA, nodeB, fun):
+        vertex_name = "%s->%s" % (nodeA, nodeB)
+        self._AddIfMissing(filleddict, vertex_name, {'nodeA': nodeA, 'nodeB': nodeB, 'calls': []})
+        filleddict[vertex_name]['calls'].append(fun)

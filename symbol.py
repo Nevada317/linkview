@@ -75,4 +75,7 @@ class Symbol:
         return "@%s \t%s \t%s \t%s \t@%s \ts%d\n%s" % (self.addr, self.section, self.flags, self.symbol, self.loc['objname'], self.segsize, self.line)
 
     def __eq__(self, b):
-        return self.symbol == b
+        if type(b) == type(self):
+            return self.line == b.line
+        else:
+            return self.symbol == b
