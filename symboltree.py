@@ -72,11 +72,12 @@ class SymbolTree:
                 self.functionDefinitions[fun_name].append(fun_def)
             usages = [s for s in self.allUndefs if s == fun_name]
             if usages:
-                fun_name += "()"
                 if not fun_name in self.functionCalls:
                     self.functionCalls[fun_name] = []
                 for usageN in usages:
-                    self.functionCalls[fun_name].append(usageN)
+                    isLocal = usageN.loc['fullobj'] == fun_def.loc['fullobj']
+                    callInfo = (usageN, "LOCAL" if isLocal else "CROSS")
+                    self.functionCalls[fun_name].append(callInfo)
 
     def FillVariables(self):
         self.variableCalls = {}
@@ -93,7 +94,9 @@ class SymbolTree:
                 if not var_name in self.variableCalls:
                     self.variableCalls[var_name] = []
                 for usageN in usages:
-                    self.variableCalls[var_name].append(usageN)
+                    isLocal = usageN.loc['fullobj'] == var_def.loc['fullobj']
+                    callInfo = (usageN, "LOCAL" if isLocal else "CROSS")
+                    self.variableCalls[var_name].append(callInfo)
 
 
 
