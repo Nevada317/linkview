@@ -2,11 +2,18 @@
 
 import re
 import os
-
+import sys
 
 from symboltree import SymbolTree
 from objtree import ObjTree
 from dot import Dot
+
+if (len(sys.argv) != 2):
+	print("Bad usage. Usage:\n  %s <build_dir>" % sys.argv[0])
+indir = sys.argv[1]
+
+
+
 
 # For debug only
 import pprint
@@ -18,10 +25,14 @@ st = []
 
 # def main():
 print("Started\n")
-# st = SymbolTree("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
-st = SymbolTree("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140/pos")
+st = SymbolTree("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140")
+# st = SymbolTree("/home/nevada/crane/screw/build/9daaa12_ru_ru_2560_e1_b140/pos")
 ot = ObjTree(st.objects)
 d = Dot()
+d.GraphAddArg("scale=4")
+d.GraphAddArg("node [pin=true]")
+# d.GraphAddArg("concentrate=true")
+# d.GraphAddArg("edge [decorate=true]")
 d.node_args = "color=black, shape=oval"
 d.subgraph_colors = ['#D0D0FF', '#D0FFD0', '#FFD0D0', '#FFFFA0', '#FFA0FF', '#A0FFFF']
 d.SubgraphAddArg("style=filled")
@@ -84,6 +95,7 @@ d.vertex_args = ""
 for v in vertexes:
     vx = vertexes[v]
     cmt = "color=red,penwidth=3" if (len(vx['calls']) > 1) else "constraint=false,color=black"
+    # cmt = "color=red,penwidth=3" if (len(vx['calls']) > 1) else "constraint=false,color=black,headlabel=\"%s\"" % vx['calls'][0]
     cmt += ",weight=%d" % (len(vx['calls']))
     d.AddVertex(vx['nodeA'], vx['nodeB'], cmt)
 d.SubgraphExit()
@@ -94,15 +106,16 @@ d.vertex_args = "constraint=false,dir=none,color=blue"
 for v in varss:
     vx = varss[v]
     cmt = "penwidth=2" if (len(vx['calls']) > 1) else "penwidth=1"
+    # cmt = "penwidth=2" if (len(vx['calls']) > 1) else "penwidth=1,label=\"%s\"" % vx['calls'][0]
     cmt += ",weight=%d" % (3*len(vx['calls']))
-    d.AddVertex(vx['nodeA'], vx['nodeB'])
+    d.AddVertex(vx['nodeA'], vx['nodeB'], cmt)
 d.SubgraphExit()
 
 
 d.GraphExit()
 d.Print()
 d.FileWrite("test.dot")
-# stream = os.popen('bash -c "dot -Tpng test.dot > test.png"')
+stream = os.popen('bash -c "neato -Tpng test.dot > neat.png"')
 
 
 
