@@ -121,9 +121,9 @@ for fun_name, fun_calls in st.functionCalls.items():
     loc = ",".join(locarr)
     if loc == "":
         loc = "unknown"
-    print("fun %s @%s" % (fun_name, loc))
+    print("fun \x1b[32;1m%s\x1b[0m @\x1b[31m%s\x1b[0m" % (fun_name, loc))
     for call, scope in fun_calls:
-        print("\tcall @%s (%s)" % (call.loc['fullobj'], scope))
+        print("\tcall @\x1b[36m%s\x1b[0m (%s)" % (call.loc['fullobj'], scope))
 
 #
 # if __name__ == '__main__':
