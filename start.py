@@ -11,6 +11,7 @@ from dot import Dot
 appname = sys.argv[0]
 if (len(sys.argv) != 2):
 	print("Bad usage. Usage:\n  %s <build_dir>" % appname)
+	exit(1)
 indir = sys.argv[1]
 
 print("%s started\n" % appname)
@@ -65,8 +66,8 @@ def AddVar(nodeA, nodeB, fun):
 #             f.write('"%s",%s,"%s"\n' % (fun_def.loc['relpath'], fun_name, usageN['relpath']))
 # f.close()
 
-f = open("vars.csv", "w+")
-f.write('Definition,Variable,Caller\n')
+# f = open("vars.csv", "w+")
+# f.write('Definition,Variable,Caller\n')
 
 # for variable_def in st.globalVars:
 #     var_name = variable_def.symbol
@@ -111,9 +112,18 @@ pp = pprint.PrettyPrinter(indent=4)
 # pp.pprint(st.functionDefinitions)
 # pp.pprint(st.functionCalls)
 # pp.pprint(st.variableDefinitions)
-pp.pprint(st.variableCalls)
+# pp.pprint(st.variableCalls)
 
-
+for fun_name, fun_calls in st.functionCalls.items():
+    locarr = []
+    for s in [s.loc['fullobj'] for s in st.globalFunctions if s == fun_name]:
+        locarr.append(s)
+    loc = ",".join(locarr)
+    if loc == "":
+        loc = "unknown"
+    print("fun %s @%s" % (fun_name, loc))
+    for call, scope in fun_calls:
+        print("\tcall @%s (%s)" % (call.loc['fullobj'], scope))
 
 #
 # if __name__ == '__main__':
